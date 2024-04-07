@@ -1,5 +1,7 @@
 # TutoringServiceFrontendVueJS
 
+Backend часть написана на FastAPI, найти можно [тут (link)](https://github.com/raison-collab/TutorialServiceFastAPI)
+
 ## Project Setup
 
 ```sh
