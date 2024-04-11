@@ -140,7 +140,7 @@ export default {
 
     <div class="services" style="display: flex;flex-wrap: wrap;">
 
-      <div class="card border-secondary mt-3" style="width: 18rem; background: none; margin-right: 2%" v-for="service in services" :key="service.id">
+      <div class="card border-secondary mt-3" style="width: 18rem; background: none; margin-right: 1%" v-for="service in services" :key="service.id">
         <div class="card-header border-secondary">{{service.subject}}</div>
         <div class="card-body">
           <h6 class="card-subtitle mb-2 text-body-secondary">{{service.user_f_name}} {{service.user_l_name}}</h6>
