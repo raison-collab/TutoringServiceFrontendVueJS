@@ -124,7 +124,11 @@ export default {
     },
     goToMyServices() {
       this.$router.push({name: "MyServices"})
-    }
+    },
+    logout() {
+      localStorage.clear()
+      this.$router.replace({name: "Login"})
+    },
   }
 }
 </script>
@@ -137,6 +141,8 @@ export default {
       <button @click="goToAddService" class="btn btn-secondary" style="margin-right: 2%">Добавить услугу</button>
       <button @click="goToMyServices" class="btn btn-secondary">Мои услуги</button>
     </div>
+
+    <button @click="logout" class="btn btn-danger">Выйти из аккаунта</button>
 
     <div class="services" style="display: flex;flex-wrap: wrap;">
 
