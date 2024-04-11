@@ -6,13 +6,50 @@ export default {
   },
   activated() {
     this.getServices()
+    this.getRole()
   },
   data () {
     return {
       services: [],
+      is_teacher: false
     }
   },
   methods: {
+    async getRole() {
+      let token = localStorage.getItem('token')
+      if (!token) {
+        this.$router.replace('/login')
+        return null
+      }
+
+      let payload = this.decodeJWT(token)
+      const userData = await this.getUserServiceData(payload.sub)
+
+      fetch(`http://127.0.0.1:8000/api/role/${userData.role_id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        method : "GET"
+      }).then(resp => {
+        if (resp.status === 200) {
+          resp.json().then(data => {
+            if (data.name === "Учитель") {
+              this.is_teacher = true
+            }
+          })
+        }
+      })
+    },
+    decodeJWT (token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        const payload = JSON.parse(atob(base64));
+        return payload;
+      } catch (e) {
+        return  null
+      }
+    },
     async getServices() {
       try {
         const response = await fetch("http://127.0.0.1:8000/api/services", {
@@ -81,6 +118,9 @@ export default {
     },
     goToDetailView(service_id) {
       this.$router.push({ name: 'Detail', params: { service_id } })
+    },
+    goToAddService() {
+      this.$router.push({name: "AddService"})
     }
   }
 }
@@ -89,6 +129,11 @@ export default {
 <template>
   <div class="content" style="margin-top: 5%;">
     <h1>Главная</h1>
+
+    <div v-if="is_teacher" class="services mb-2">
+      <button @click="goToAddService" class="btn btn-secondary" style="margin-right: 2%">Добавить услугу</button>
+      <button class="btn btn-secondary">Мои услуги</button>
+    </div>
 
     <div class="services" style="display: flex;flex-wrap: wrap;">
 
