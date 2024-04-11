@@ -26,6 +26,9 @@ export default {
     goBack() {
       this.$router.go(-1)
     },
+    goPay() {
+      this.$router.push({name: "Pay"})
+    },
     async getService() {
       try {
         const response = await fetch(`http://127.0.0.1:8000/api/service/${this.service_id}`, {
@@ -104,7 +107,7 @@ export default {
         <h5 class="card-title">ФИО: {{service.userData.s_name}} {{service.userData.f_name}} {{service.userData.l_name}}</h5>
         <p class="card-text"><b>Цена:</b> {{service.amount}}</p>
         <p class="card-text">Описание услуги: {{service.info}}</p>
-        <button class="btn btn-primary">Оплатить</button>
+        <button @click="goPay" class="btn btn-primary">Оплатить</button>
       </div>
     </div>
   </div>

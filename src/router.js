@@ -5,6 +5,7 @@ import Main from "@/components/main/Main.vue";
 import Detail from "@/components/main/Detail.vue";
 import AddService from "@/components/main/AddService.vue";
 import MyServices from "@/components/main/MyServices.vue";
+import Pay from "@/components/main/Pay.vue";
 
 
 export default createRouter({
@@ -15,7 +16,8 @@ export default createRouter({
         {path: "/main", component: Main, alias: '/'},
         {path: "/detail/:service_id", name: "Detail", component: Detail},
         {path: "/add-service", name: "AddService", component: AddService},
-        {path: "/my-services", name: "MyServices", component: MyServices}
+        {path: "/my-services", name: "MyServices", component: MyServices},
+        {path: "/pay", name: "Pay", component: Pay}
     ]
 })
 
