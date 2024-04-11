@@ -169,7 +169,10 @@ export default {
 </script>
 
 <template>
-  <h1 v-if="!is_teacher">Нет прав</h1>
+  <div class="perm" v-if="!is_teacher">
+    <h1 >Нет прав</h1>
+    <p @click="goBack" style="cursor: pointer"><- Назад</p>
+  </div>
 
 <div class="content" v-if="is_teacher" style="display: flex; flex-direction: column; align-items: center; width: 100%;margin-top: 5%;">
   <h1>Добавить услугу</h1>

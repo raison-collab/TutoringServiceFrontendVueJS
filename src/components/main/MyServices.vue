@@ -1,12 +1,9 @@
 <script>
 export default {
-  name: "Main",
-  mounted() {
-    this.getServices()
-  },
-  activated() {
-    this.getServices()
+  name: "MyServices",
+  created() {
     this.getRole()
+    this.getServices()
   },
   data () {
     return {
@@ -15,41 +12,6 @@ export default {
     }
   },
   methods: {
-    async getRole() {
-      let token = localStorage.getItem('token')
-      if (!token) {
-        this.$router.replace('/login')
-        return null
-      }
-
-      let payload = this.decodeJWT(token)
-      const userData = await this.getUserServiceData(payload.sub)
-
-      fetch(`http://127.0.0.1:8000/api/role/${userData.role_id}`, {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        },
-        method : "GET"
-      }).then(resp => {
-        if (resp.status === 200) {
-          resp.json().then(data => {
-            if (data.name === "Учитель") {
-              this.is_teacher = true
-            }
-          })
-        }
-      })
-    },
-    decodeJWT (token) {
-      try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace('-', '+').replace('_', '/');
-        const payload = JSON.parse(atob(base64));
-        return payload;
-      } catch (e) {
-        return  null
-      }
-    },
     async getServices() {
       try {
         const response = await fetch("http://127.0.0.1:8000/api/services", {
@@ -60,8 +22,10 @@ export default {
         });
 
         if (response.status === 200) {
+          const payload = this.decodeJWT(localStorage.getItem("token"))
           const data = await response.json();
           const updatedData = await Promise.all(data.map(async (el) => {
+
             const subject = await this.getSubject(el.subject_id);
             const userData = await this.getUserServiceData(el.user_id);
             let info = el.info.length < 100 ? el.info : el.info.slice(0, 97)+"..."
@@ -74,7 +38,7 @@ export default {
             };
           }));
 
-          this.services = updatedData;
+          this.services = updatedData.filter(el => el.user_id === parseInt(payload.sub));
         } else if (response.status === 401) {
           this.$router.replace("/login");
         }
@@ -119,24 +83,81 @@ export default {
     goToDetailView(service_id) {
       this.$router.push({ name: 'Detail', params: { service_id } })
     },
-    goToAddService() {
-      this.$router.push({name: "AddService"})
+    decodeJWT (token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        const payload = JSON.parse(atob(base64));
+        return payload;
+      } catch (e) {
+        return  null
+      }
     },
-    goToMyServices() {
-      this.$router.push({name: "MyServices"})
+    async deleteService(service_id, user_id) {
+      const payload = this.decodeJWT(localStorage.getItem("token"))
+
+      if (user_id === parseInt(payload.sub)) {
+        fetch(`http://127.0.0.1:8000/api/service/${service_id}`, {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          },
+          method: "DELETE",
+        }).then(resp => {
+          if (resp.status === 200) {
+            this.services = this.getServices()
+          } else if (resp.status === 401) {
+            this.$router.replace({name: "Login"})
+            return null
+          } else {
+            return null
+          }
+        })
+      }
+    },
+    async getRole() {
+      let token = localStorage.getItem('token')
+      if (!token) {
+        this.$router.replace('/login')
+        return null
+      }
+
+      let payload = this.decodeJWT(token)
+      const userData = await this.getUserServiceData(payload.sub)
+
+      fetch(`http://127.0.0.1:8000/api/role/${userData.role_id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        method : "GET"
+      }).then(resp => {
+        if (resp.status === 200) {
+          resp.json().then(data => {
+            if (data.name === "Учитель") {
+              this.is_teacher = true
+            }
+          })
+        }
+      })
+    },
+    goBack() {
+      this.$router.go(-1)
     }
   }
 }
 </script>
 
 <template>
-  <div class="content" style="margin-top: 5%;">
-    <h1>Главная</h1>
+  <div class="perm" v-if="!is_teacher">
+    <h1 >Нет прав</h1>
+    <p @click="goBack" style="cursor: pointer"><- Назад</p>
+  </div>
 
-    <div v-if="is_teacher" class="services mb-2">
-      <button @click="goToAddService" class="btn btn-secondary" style="margin-right: 2%">Добавить услугу</button>
-      <button @click="goToMyServices" class="btn btn-secondary">Мои услуги</button>
-    </div>
+
+
+  <div v-if="is_teacher" class="content" style="margin-top: 5%;">
+    <p @click="goBack" style="cursor: pointer"><- Назад</p>
+    <h1>Мои услуги</h1>
 
     <div class="services" style="display: flex;flex-wrap: wrap;">
 
@@ -148,18 +169,15 @@ export default {
           <p class="card-text">Описание: {{ service.info }}</p>
         </div>
         <div class="card-footer">
-          <button @click="goToDetailView(service.id)" style="" class="btn btn-link">Подробнее</button>
+          <button @click="goToDetailView(service.id)" class="btn btn-link">Подробнее</button>
+          <button @click="deleteService(service.id, service.user_id)" style="color: red; float: right" class="btn btn-link">Удалить</button>
         </div>
       </div>
-
 
     </div>
   </div>
 </template>
 
-<style>
-* {
-  margin: 0;
-  padding: 0;
-}
+<style scoped>
+
 </style>

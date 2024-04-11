@@ -11,7 +11,7 @@ export default createRouter({
     history: createWebHashHistory(),
     routes: [
         {path: "/register", component: RegForm},
-        {path: "/login", component: LoginForm},
+        {path: "/login", component: LoginForm, name: "Login"},
         {path: "/main", component: Main, alias: '/'},
         {path: "/detail/:service_id", name: "Detail", component: Detail},
         {path: "/add-service", name: "AddService", component: AddService},
