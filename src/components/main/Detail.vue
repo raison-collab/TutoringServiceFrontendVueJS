@@ -10,7 +10,10 @@ export default {
   data () {
     return {
       service_id: null,
-      service: {}
+      service: {},
+      backHost: import.meta.env.VITE_SERVER_HOST,
+      backPort: import.meta.env.VITE_SERVER_PORT,
+      backProtocol: import.meta.env.VITE_SERVER_PROTOCOL
     }
   },
   watch: {
@@ -31,7 +34,7 @@ export default {
     },
     async getService() {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/service/${this.service_id}`, {
+        const response = await fetch(`${this.backProtocol}://${this.backHost}:${this.backPort}/api/service/${this.service_id}`, {
           headers: {
             "Authorization": `Bearer ${localStorage.getItem('token')}`
           },
@@ -58,7 +61,7 @@ export default {
       }
     },
     async getUserServiceData(user_id) {
-      return fetch(`http://127.0.0.1:8000/api/user/service-data/${user_id}`, {
+      return fetch(`${this.backProtocol}://${this.backHost}:${this.backPort}/api/user/service-data/${user_id}`, {
         headers: {
           "Authorization": `Bearer ${localStorage.getItem('token')}`
         },
@@ -73,9 +76,13 @@ export default {
           return null
         }
       })
+
     },
     async getSubject(subject_id) {
-      return fetch(`http://127.0.0.1:8000/api/subject/${subject_id}`, {
+      if (subject_id === undefined) {
+        return null
+      }
+      return fetch(`${this.backProtocol}://${this.backHost}:${this.backPort}/api/subject/${subject_id}`, {
         headers: {
           "Authorization": `Bearer ${localStorage.getItem("token")}`
         },

@@ -26,7 +26,10 @@ export default {
         username: '',
         password: ''
       },
-      errorMessage: ''
+      errorMessage: '',
+      backHost: import.meta.env.VITE_SERVER_HOST,
+      backPort: import.meta.env.VITE_SERVER_PORT,
+      backProtocol: import.meta.env.VITE_SERVER_PROTOCOL
     }
   },
   methods: {
@@ -41,7 +44,7 @@ export default {
           formData.append(key, value);
         }
 
-        fetch("http://127.0.0.1:8000/api/auth/jwt/login", {
+        fetch(`${this.backProtocol}://${this.backHost}:${this.backPort}/api/auth/jwt/login`, {
           method: "POST",
           credentials: 'include',
           headers: {

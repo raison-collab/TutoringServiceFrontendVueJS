@@ -122,7 +122,10 @@ export default {
         role: false,
         role_id: 0
       },
-      errorMessage: ''
+      errorMessage: '',
+      backHost: import.meta.env.VITE_SERVER_HOST,
+      backPort: import.meta.env.VITE_SERVER_PORT,
+      backProtocol: import.meta.env.VITE_SERVER_PROTOCOL
     }
   },
   methods: {
@@ -136,8 +139,7 @@ export default {
         const { repeat_password, role, ...formDataWithoutRepeat } = this.regForm;
         const formData = JSON.stringify(formDataWithoutRepeat);
 
-        // todo сделать показ ошибок сервера
-        fetch("http://127.0.0.1:8000/api/auth/register", {
+        fetch(`${this.backProtocol}://${this.backHost}:${this.backPort}/api/auth/register`, {
           method: "POST",
           headers: {
             'Content-Type': 'application/json'

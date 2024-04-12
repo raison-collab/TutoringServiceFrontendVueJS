@@ -12,12 +12,15 @@ export default {
       selectedSubject: '',
       servicePrice: '',
       serviceDescription: '',
-      isShowDescriptionLabel: true
+      isShowDescriptionLabel: true,
+      backHost: import.meta.env.VITE_SERVER_HOST,
+      backPort: import.meta.env.VITE_SERVER_PORT,
+      backProtocol: import.meta.env.VITE_SERVER_PROTOCOL
     }
   },
   methods: {
     async getSubjects() {
-      return fetch(`http://127.0.0.1:8000/api/subjects`, {
+      return fetch(`${this.backProtocol}://${this.backHost}:${this.backPort}/api/subjects`, {
         headers: {
           "Authorization": `Bearer ${localStorage.getItem("token")}`
         },
@@ -94,7 +97,7 @@ export default {
       let payload = this.decodeJWT(token)
       const userData = await this.getUserServiceData(payload.sub)
 
-      fetch(`http://127.0.0.1:8000/api/role/${userData.role_id}`, {
+      fetch(`${this.backProtocol}://${this.backHost}:${this.backPort}/api/role/${userData.role_id}`, {
         headers: {
           "Authorization": `Bearer ${token}`
         },
@@ -110,7 +113,7 @@ export default {
       })
     },
     async getUserServiceData(user_id) {
-      return fetch(`http://127.0.0.1:8000/api/user/service-data/${user_id}`, {
+      return fetch(`${this.backProtocol}://${this.backHost}:${this.backPort}/api/user/service-data/${user_id}`, {
         headers: {
           "Authorization": `Bearer ${localStorage.getItem('token')}`
         },
@@ -144,7 +147,7 @@ export default {
           "info": this.serviceDescription
         }
 
-        fetch("http://127.0.0.1:8000/api/service", {
+        fetch(`${this.backProtocol}://${this.backHost}:${this.backPort}/api/service`, {
           headers: {
             "Authorization": `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json'

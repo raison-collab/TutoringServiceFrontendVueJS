@@ -8,13 +8,16 @@ export default {
   data () {
     return {
       services: [],
-      is_teacher: false
+      is_teacher: false,
+      backHost: import.meta.env.VITE_SERVER_HOST,
+      backPort: import.meta.env.VITE_SERVER_PORT,
+      backProtocol: import.meta.env.VITE_SERVER_PROTOCOL
     }
   },
   methods: {
     async getServices() {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/services", {
+        const response = await fetch(`${this.backProtocol}://${this.backHost}:${this.backPort}/api/services`, {
           headers: {
             "Authorization": `Bearer ${localStorage.getItem('token')}`
           },
@@ -47,7 +50,7 @@ export default {
       }
     },
     async getSubject(subject_id) {
-      return fetch(`http://127.0.0.1:8000/api/subject/${subject_id}`, {
+      return fetch(`${this.backProtocol}://${this.backHost}:${this.backPort}/api/subject/${subject_id}`, {
         headers: {
           "Authorization": `Bearer ${localStorage.getItem("token")}`
         },
@@ -64,7 +67,7 @@ export default {
       })
     },
     async getUserServiceData(user_id) {
-      return fetch(`http://127.0.0.1:8000/api/user/service-data/${user_id}`, {
+      return fetch(`${this.backProtocol}://${this.backHost}:${this.backPort}/api/user/service-data/${user_id}`, {
         headers: {
           "Authorization": `Bearer ${localStorage.getItem('token')}`
         },
@@ -97,7 +100,7 @@ export default {
       const payload = this.decodeJWT(localStorage.getItem("token"))
 
       if (user_id === parseInt(payload.sub)) {
-        fetch(`http://127.0.0.1:8000/api/service/${service_id}`, {
+        fetch(`${this.backProtocol}://${this.backHost}:${this.backPort}/api/service/${service_id}`, {
           headers: {
             "Authorization": `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json'
@@ -125,7 +128,7 @@ export default {
       let payload = this.decodeJWT(token)
       const userData = await this.getUserServiceData(payload.sub)
 
-      fetch(`http://127.0.0.1:8000/api/role/${userData.role_id}`, {
+      fetch(`${this.backProtocol}://${this.backHost}:${this.backPort}/api/role/${userData.role_id}`, {
         headers: {
           "Authorization": `Bearer ${token}`
         },
