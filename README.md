@@ -19,3 +19,15 @@ npm run dev
 ```sh
 npm run build
 ```
+
+##  Environment
+
+You need `.env.development` and `.env.production` at the root of the project. There you need to specify the data to connect to the server
+
+### env example
+
+```
+VITE_SERVER_HOST=127.0.0.1
+VITE_SERVER_PORT=8000
+VITE_SERVER_PROTOCOL=http
+```
