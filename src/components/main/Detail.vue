@@ -4,6 +4,9 @@ export default {
   created() {
     this.service_id = this.$route.params.service_id;
   },
+  mounted() {
+    this.getService()
+  },
   activated() {
     this.getService()
   },
@@ -33,10 +36,16 @@ export default {
       this.$router.push({name: "Pay"})
     },
     async getService() {
+      let token = localStorage.getItem('token')
+      if (!token) {
+        this.$router.replace('/login');
+        return null
+      }
+
       try {
         const response = await fetch(`${this.backProtocol}://${this.backHost}:${this.backPort}/api/service/${this.service_id}`, {
           headers: {
-            "Authorization": `Bearer ${localStorage.getItem('token')}`
+            "Authorization": `Bearer ${token}`
           },
           method: "GET"
         });
@@ -108,11 +117,11 @@ export default {
   <h1>Подробности услуги</h1>
 
   <div class="content">
-    <div class="card border-secondary" style="background: none">
+    <div class="card border-secondary" data-bs-theme="dark" style="background: none">
       <h5 class="card-header border-secondary">{{ service.subject.name }}</h5>
       <div class="card-body">
         <h5 class="card-title">ФИО: {{service.userData.s_name}} {{service.userData.f_name}} {{service.userData.l_name}}</h5>
-        <p class="card-text"><b>Цена:</b> {{service.amount}}</p>
+        <p class="card-text"><b>Цена:</b> {{service.amount}} ₽</p>
         <p class="card-text">Описание услуги: {{service.info}}</p>
         <button @click="goPay" class="btn btn-primary">Оплатить</button>
       </div>
