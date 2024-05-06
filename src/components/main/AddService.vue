@@ -196,7 +196,7 @@ export default {
 
     <div class="form-floating" @focusin="hideDescriptionLabel" @focusout="hideDescriptionLabel">
       <textarea class="form-control" v-model.trim="serviceDescription" placeholder="Информация об услуге (контакты преподавателя и прочая информация)" id="floatingTextarea2" style="min-height: 100px"></textarea>
-      <label v-if="isShowDescriptionLabel" for="floatingTextarea2" style="color: #2A2929">Подробное описание для услуги (контакты преподавателя и пр)</label>
+<!--      <label v-if="isShowDescriptionLabel" for="floatingTextarea2" style="color: #2A2929">Подробное описание для услуги (контакты преподавателя и пр)</label>-->
     </div>
 
     <button type="submit" class="btn btn-secondary mt-3">Добавить услугу</button>

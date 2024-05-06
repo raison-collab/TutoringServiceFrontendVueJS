@@ -31,3 +31,9 @@ VITE_SERVER_HOST=127.0.0.1
 VITE_SERVER_PORT=8000
 VITE_SERVER_PROTOCOL=http
 ```
+
+## Docker 
+
+`docker build -t tutoring-service-vue .`
+
+`docker run -p 5173:5173 -d tutoring-service-vue`
